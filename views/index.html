@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PW Zendesk Integration</title>
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href='//fonts.googleapis.com/css?family=Roboto:500,900,400italic,100,700italic,300,700,500italic,400' rel='stylesheet'>
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pw-app-sdk@0.1.2/dist/pwsdk.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/mailtoharshit/CloudCast/master/src/salesforce-lightning-design-system-1.0.0/assets/styles/salesforce-lightning-design-system.min.css">
+
+
+<script>
+
+	var person = {
+		email : 'asong@uog.com'
+	};
+
+	var zenCard;
+	var red = '#B22222';
+	var teal = '#46B6AC';
+
+	try {
+		//debugger;
+		var pwSdkObj = PWSDK.init();
+	} catch(err) {
+		console.log(err);	
+	}
+
+	$(function() {
+		if (pwSdkObj) {
+			pwSdkObj.setAppUI({height: 300	});
+			pwSdkObj.getContext().then(function(data) {
+				person.email = data.context.primary_email;
+				fetchZendeskTicketsByEmail(person);
+				console.log('CONTEXT OBJECT:' + data.context);
+			});
+		}
+
+		sfdcTicketsList = new Vue({
+			el: '#sfdcTicketsList',
+			data: {
+			user: '',
+			items: [],
+			status: 'new',
+			newTicketUrl: 'https://d3v-prosperworksdev.zendesk.com/hc/en-us/requests/new'
+			}
+		})
+
+		function capitalizeFirstLetter(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
+
+		function fetchSFDCInfo(person){
+			$.ajax({
+			type: 'GET',
+			dataType: 'json',
+			data: person,
+			url: '/sfdcinfo',
+			success: function(result) {
+				console.log('IN SUCCESSSSSSS');
+				console.log(result);
+				sfdcTicketsList.status = 'success';
+				sfdcTicketsList.items = [];
+				$.each(result, function(index){
+					var subject = result[index].Subject;
+					var status = result[index].Status;
+					sfdcTicketsList.items.push({
+						ticketId : result[index].Id,
+						subject : result[index].Subject,
+						status : result[index].Status, 
+					});
+
+				});
+				debugger;
+			},
+			error: function(result) {
+				console.log(result);
+				zenTicketsList.status = 'error';
+			}
+
+			});
+		}
+
+		if (!pwSdkObj) {
+			console.log('no context object...fetching tickets for default email:' + person.email)
+			debugger;
+			fetchSFDCInfo(person);
+
+		}
+
+	});
+
+</script>
+
+<style>
+
+	body {
+		-webkit-font-smoothing: antialiased;
+		font-family: 'Roboto', sans-serif;
+	}
+
+	.demo-card-square.mdl-card {
+	  width: 100%;
+	  margin: auto;
+	  height: 100vh;
+	  overflow: scroll;
+	}
+
+	.mdl-card__supporting-text-nopadding {
+		padding: 0px;
+	}
+
+	.mdl-list-sane {
+		padding: 0px;
+		margin-top:0px;
+		margin-bottom:0px;
+	}
+
+	.mdl-list-sane li {
+		font-size: 14px;
+		padding-top: 4px;
+    	padding-bottom: 4px;
+	}
+
+	.mdl-card__title-sane {
+		padding-bottom: 0px;
+    	border-top: 1px solid #e9e9e9;
+	}
+
+	.mdl-card__title-text-sane {
+    	font-size: 13px;
+    	line-height: 24px;
+    	color: #888;
+    	font-weight: 400;
+	}
+
+	.mdl-list__item-primary-content-sane {
+		font-size: 12px;
+    	color: #888;
+    	font-weight: 400;
+    	line-height:14px !important;
+    	letter-spacing: normal;
+    }
+
+	.mdl-list__item-primary-content-sane a {
+    	color: #0D94F6;
+    	text-decoration: none;
+    	font-weight:normal;
+	}
+
+	.mdl-list__item-primary-content-sane a:hover {
+		text-decoration: underline;
+	}
+
+	.mdl-progress {
+		margin-top: 20px;
+	}
+
+	.material-icons-sane {
+    	font-size: 20px;
+    	line-height: 24px;
+    	color: #888;
+    	font-weight: 400;
+	}
+
+	.material-icons-sane a {
+    	color: #0D94F6;
+    	text-decoration: none;
+    	font-weight:normal;
+	}
+
+	.material-icons-sane-small {
+    	font-size: 12px;
+    	line-height: 16px;
+    	color: #888;
+    	font-weight: 400;
+	}
+	.mdl-list-item-second-line {
+		font-size: 12px;
+    	line-height: 14px;
+		color: #363636;
+    	font-weight: 400;
+	}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!--<button>Display Ticket Info</button>-->
+
+
+</body>
+</html>
+
+
+
+
