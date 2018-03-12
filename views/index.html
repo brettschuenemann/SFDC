@@ -65,13 +65,15 @@
 				console.log(result);
 				sfdcTicketsList.status = 'success';
 				sfdcTicketsList.items = [];
-				$.each(result, function(index){
-					var subject = result[index].Subject;
-					var status = result[index].Status;
+				var cases = result[0].Cases.records;
+				$.each(cases, function(index){
+					var subject = cases[index].Subject;
+					var status = cases[index].Status;
+					debugger;
 					sfdcTicketsList.items.push({
-						ticketId : result[index].Id,
-						subject : result[index].Subject,
-						status : result[index].Status, 
+						ticketId : cases[index].Id,
+						subject : cases[index].Subject,
+						status : cases[index].Status, 
 					});
 
 				});
