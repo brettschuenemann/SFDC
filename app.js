@@ -13,8 +13,13 @@ router.get("/",function(req,res){
   res.sendFile(path + "index.html");
 });
 
-router.get("/sfdcinfo", function(req, res){
+//REMOVE: hack for PW staging environment
+router.get("/sidebar",function(req,res){
+  res.sendFile(path + "index.html");
+});
 
+router.get("/sfdcinfo", function(req, res){
+	console.log('in sfdcinfo');
 	conn.login('brett@pw.com', 'Salesforce1wIpd13kf8wDWMfbEMi7CA4bS', function(err, userInfo) {
 	  	if (err) { return console.error(err); }
 		var records = [];

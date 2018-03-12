@@ -1,206 +1,86 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+ 
 <meta charset="UTF-8">
-<title>PW Zendesk Integration</title>
+<title>PW Salesforce Integration</title>
+
+<!--3rd-party Styles: mdlite, material icons, roboto font-->
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href='//fonts.googleapis.com/css?family=Roboto:500,900,400italic,100,700italic,300,700,500italic,400' rel='stylesheet'>
+
+<!--3rd-party JS: mdlite, vue, prosperworks SDK, jquery-->
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pw-app-sdk@0.1.2/dist/pwsdk.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/mailtoharshit/CloudCast/master/src/salesforce-lightning-design-system-1.0.0/assets/styles/salesforce-lightning-design-system.min.css">
 
-
-<script>
-
-	var person = {
-		email : 'asong@uog.com'
-	};
-
-	var zenCard;
-	var red = '#B22222';
-	var teal = '#46B6AC';
-
-	try {
-		//debugger;
-		var pwSdkObj = PWSDK.init();
-	} catch(err) {
-		console.log(err);	
-	}
-
-	$(function() {
-		if (pwSdkObj) {
-			pwSdkObj.setAppUI({height: 300	});
-			pwSdkObj.getContext().then(function(data) {
-				person.email = data.context.primary_email;
-				fetchZendeskTicketsByEmail(person);
-				console.log('CONTEXT OBJECT:' + data.context);
-			});
-		}
-
-		sfdcTicketsList = new Vue({
-			el: '#sfdcTicketsList',
-			data: {
-			user: '',
-			items: [],
-			status: 'new',
-			newTicketUrl: 'https://d3v-prosperworksdev.zendesk.com/hc/en-us/requests/new'
-			}
-		})
-
-		function capitalizeFirstLetter(string) {
-			return string.charAt(0).toUpperCase() + string.slice(1);
-		}
-
-		function fetchSFDCInfo(person){
-			$.ajax({
-			type: 'GET',
-			dataType: 'json',
-			data: person,
-			url: '/sfdcinfo',
-			success: function(result) {
-				console.log('IN SUCCESSSSSSS');
-				console.log(result);
-				sfdcTicketsList.status = 'success';
-				sfdcTicketsList.items = [];
-				var cases = result[0].Cases.records;
-				$.each(cases, function(index){
-					var subject = cases[index].Subject;
-					var status = cases[index].Status;
-					debugger;
-					sfdcTicketsList.items.push({
-						ticketId : cases[index].Id,
-						subject : cases[index].Subject,
-						status : cases[index].Status, 
-					});
-
-				});
-				debugger;
-			},
-			error: function(result) {
-				console.log(result);
-				zenTicketsList.status = 'error';
-			}
-
-			});
-		}
-
-		if (!pwSdkObj) {
-			console.log('no context object...fetching tickets for default email:' + person.email)
-			debugger;
-			fetchSFDCInfo(person);
-
-		}
-
-	});
-
-</script>
-
-<style>
-
-	body {
-		-webkit-font-smoothing: antialiased;
-		font-family: 'Roboto', sans-serif;
-	}
-
-	.demo-card-square.mdl-card {
-	  width: 100%;
-	  margin: auto;
-	  height: 100vh;
-	  overflow: scroll;
-	}
-
-	.mdl-card__supporting-text-nopadding {
-		padding: 0px;
-	}
-
-	.mdl-list-sane {
-		padding: 0px;
-		margin-top:0px;
-		margin-bottom:0px;
-	}
-
-	.mdl-list-sane li {
-		font-size: 14px;
-		padding-top: 4px;
-    	padding-bottom: 4px;
-	}
-
-	.mdl-card__title-sane {
-		padding-bottom: 0px;
-    	border-top: 1px solid #e9e9e9;
-	}
-
-	.mdl-card__title-text-sane {
-    	font-size: 13px;
-    	line-height: 24px;
-    	color: #888;
-    	font-weight: 400;
-	}
-
-	.mdl-list__item-primary-content-sane {
-		font-size: 12px;
-    	color: #888;
-    	font-weight: 400;
-    	line-height:14px !important;
-    	letter-spacing: normal;
-    }
-
-	.mdl-list__item-primary-content-sane a {
-    	color: #0D94F6;
-    	text-decoration: none;
-    	font-weight:normal;
-	}
-
-	.mdl-list__item-primary-content-sane a:hover {
-		text-decoration: underline;
-	}
-
-	.mdl-progress {
-		margin-top: 20px;
-	}
-
-	.material-icons-sane {
-    	font-size: 20px;
-    	line-height: 24px;
-    	color: #888;
-    	font-weight: 400;
-	}
-
-	.material-icons-sane a {
-    	color: #0D94F6;
-    	text-decoration: none;
-    	font-weight:normal;
-	}
-
-	.material-icons-sane-small {
-    	font-size: 12px;
-    	line-height: 16px;
-    	color: #888;
-    	font-weight: 400;
-	}
-	.mdl-list-item-second-line {
-		font-size: 12px;
-    	line-height: 14px;
-		color: #363636;
-    	font-weight: 400;
-	}
-
-</style>
+<!--app-specific JS and styles-->
+<link rel="stylesheet" href="/styles/pwZdStyles.css">
+<script src="/js/pwZdClient.js"></script>
 
 </head>
 
 <body>
 
+<div>
 
-<!--<button>Display Ticket Info</button>-->
+	<div class="demo-card-square mdl-card mdl-shadow--2dp" id="sfdcTicketsList">
+		<div class="mdl-card__title mdl-card__title-sane" >
+			<h2 class="mdl-card__title-text mdl-card__title-text-sane">Salesforce Cases&nbsp;<span v-if="items">({{items.length}})</span></h2>
+			<div class="mdl-layout-spacer"></div>
+    		<i class="material-icons material-icons-sane"><a target="_blank" v-bind:href="newTicketUrl">add</a></i>
+		</div>
+		<div class="mdl-card__supporting-text mdl-card__supporting-text-nopadding">
+			<div class="mdl-card__supporting-text mdl-list__item-primary-content-sane" v-if="status === 'new'">
+				<div>Fetching your Salesforce Cases</div>
+				<div></div>
+				<div>This may take a moment.</div>
+				<div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+			</div>			
+			<ul class="mdl-list mdl-list-sane" v-else-if="status === 'success' && items.length">
+				<li style="height:initial;" class="mdl-list__item mdl-list__item--three-line mdl-list__item--three-line-sane" v-for="(item, index) in items" v-if="index<4">
+					<span style="height:initial; max-height:52px;" class="mdl-list__item-primary-content mdl-list__item-primary-content-sane">
+						<i class="material-icons mdl-list__item-avatar mdl-list__item-avatar-sane">forum</i>
 
-
+					    <span>
+					    	<a :href="item.url" target="_blank">{{item.subject}}</a>
+					    	<!--<span class="material-icons material-icons-sane-small">info</span>-->
+					    </span>
+					    <div class="mdl-list-item-second-line">{{item.created}} |  
+					    <span class="mdl-chip mdl-chip-sane" 
+					    	  :class="{
+					    	  statusNew : (item.status == 'New'),
+					    	  statusOpen : (item.status == 'Escalated'),
+					    	  statusPending : (item.status == 'Working'),
+					    	  statusOnHold : (item.status == 'Other'),
+					    	  statusSolved : (item.status == 'solved')
+					   		}"
+					    >
+    						<span class="mdl-chip__text mdl-chip__text-sane">{{item.status}}</span>
+						</span>
+						<span v-if="item.type" style="text-transform: capitalize;">{{item.type}}</span>
+						<span v-if="item.ticketId">#{{item.ticketId}}</span>
+						<span v-if="item.priority">({{item.priority}})</span>
+						</div>
+					</span>
+				</li>
+				<li style="height:initial;" class="mdl-list__item mdl-list__item--three-line mdl-list__item--three-line-sane" v-if="items.length > 4">
+					<span style="height:initial; max-height:52px; text-align:right;" class="mdl-list__item-primary-content mdl-list__item-primary-content-sane">
+						<a target="_blank" :href="'https://d3v-prosperworksdev.zendesk.com/agent/users/' + user + '/'">> View All Tickets ({{items.length}})</a>
+					</span>
+				</li>
+			</ul>
+			<div class="mdl-card__supporting-text mdl-list__item-primary-content-sane" v-else-if="status === 'success'">
+				<span>There are no tickets to display</span>
+			</div>
+			<div class="mdl-card__supporting-text" v-else-if="status === 'error'">
+				<span>ERROR: There has been an error retrieving the Zendesk Tickets</span>
+			</div>
+		</div>
+	</div>
+</div>
 </body>
 </html>
-
-
-
-
