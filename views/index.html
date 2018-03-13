@@ -41,7 +41,7 @@
 				<div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
 			</div>			
 			<ul class="mdl-list mdl-list-sane" v-else-if="status === 'success' && items.length">
-				<li style="height:initial;" class="mdl-list__item mdl-list__item--three-line mdl-list__item--three-line-sane" v-for="(item, index) in items" v-if="index<4">
+				<li style="height:initial; max-height:44px;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="mdl-list__item mdl-list__item--three-line mdl-list__item--three-line-sane" v-for="(item, index) in items" v-if="index<4">
 					<span style="height:initial; max-height:52px;" class="mdl-list__item-primary-content mdl-list__item-primary-content-sane">
 						<i class="material-icons mdl-list__item-avatar mdl-list__item-avatar-sane">forum</i>
 
