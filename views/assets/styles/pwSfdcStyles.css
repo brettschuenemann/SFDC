@@ -47,6 +47,11 @@
     	letter-spacing: normal;
     }
 
+    li.mdl-list__item-primary-content-sane {
+    	height:initial; 
+		max-height:52px;
+    }
+
 	.mdl-list__item-primary-content-sane a {
     	color: #0D94F6;
     	text-decoration: none;
@@ -135,6 +140,14 @@
 		line-height: 24px;
 		vertical-align: middle;
 		text-align: center ;
+	}
+
+	li.mdl-list__item--three-line-sane {
+		height:initial; 
+		max-height:44px;
+		overflow: hidden; 
+		white-space: nowrap; 
+		text-overflow: ellipsis;
 	}
 
 
