@@ -62,6 +62,9 @@ $(function() {
 					url : ticketUrl
 				});
 			})
+
+			if (pwSdkObj) { pwSdkObj.setAppUI({ count: sfdcTicketsList.items.length }); }
+
 		},
 
 		error: function(result) {
